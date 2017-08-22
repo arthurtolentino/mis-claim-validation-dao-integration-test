@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+       
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close"
+        p:driverClass="${jdbc.driver.class}"
+        p:jdbcUrl="${postgres.endpoint}"
+        p:user="${jdbc.username}"
+        p:password="${jdbc.password}"
+        p:maxPoolSize="${jdbc.pool.size.max}"
+        p:minPoolSize="${jdbc.pool.size.min}"
+        p:testConnectionOnCheckout="true"/>
+     
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+        c:dataSource-ref="dataSource"/>
+    
+    <bean id="claimValidationBatchDao" class="com.doradosystems.mis.dao.ClaimValidationBatchDao"
+        c:dataSource-ref="dataSource" />
+        
+    <bean id="claimValidationRecordDao" class="com.doradosystems.mis.dao.ClaimValidationRecordDao"
+        c:dataSource-ref="dataSource" />
+        
+    <bean id="claimValidationResponseDao" class="com.doradosystems.mis.dao.ClaimValidationResponseDao"
+        c:dataSource-ref="dataSource" />
+        
+</beans>
