@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.sql.DataSource;
 
@@ -58,18 +59,18 @@ public class ClaimValidationRecordDaoIT {
     public void add() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         
-        Long id = dao.add(record);
+        UUID id = dao.add(record);
         ClaimValidationRecord result = dao.get(id);
         assertThat(result, is(notNullValue()));
     }
     
     @Test(expected = DataPersistenceException.class)
     public void addIllegalBatchId() throws Exception {
-        ClaimValidationRecord record = new ClaimValidationRecord(null, 1L, 1L, Status.COMPLETE, "claimNumber",
+        ClaimValidationRecord record = new ClaimValidationRecord(null, UUID.randomUUID(), 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         dao.add(record);
     }
@@ -78,11 +79,11 @@ public class ClaimValidationRecordDaoIT {
     public void getById() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         
-        Long id = dao.add(record);
+        UUID id = dao.add(record);
         ClaimValidationRecord result = dao.get(id);
         assertThat(result, is(notNullValue()));
         assertEquals(batchId, result.getBatchId());
@@ -97,18 +98,18 @@ public class ClaimValidationRecordDaoIT {
     
     @Test(expected = NotFoundException.class)
     public void getByIdThatDoesNotExist() throws Exception {
-        dao.get(System.currentTimeMillis());
+        dao.get(UUID.randomUUID());
     }
     
     @Test
     public void getByBatchIAndRunNumber() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         
-        Long id = dao.add(record);
+        UUID id = dao.add(record);
         List<ClaimValidationRecord> results = dao.getByBatchIdAndRunNumber(batchId, record.getRunNumber());
         assertEquals(1, results.size());
         ClaimValidationRecord result = results.get(0);
@@ -127,12 +128,12 @@ public class ClaimValidationRecordDaoIT {
     public void getByBatchIAndRunNumberWhereBatchIdDoesNotExist() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         
         dao.add(record);
-        List<ClaimValidationRecord> results = dao.getByBatchIdAndRunNumber(System.currentTimeMillis(), record.getRunNumber());
+        List<ClaimValidationRecord> results = dao.getByBatchIdAndRunNumber(UUID.randomUUID(), record.getRunNumber());
         assertEquals(0, results.size());
     }
     
@@ -140,7 +141,7 @@ public class ClaimValidationRecordDaoIT {
     public void getByBatchIAndRunNumberWhereRunNumberDoesNotExist() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         
@@ -153,9 +154,9 @@ public class ClaimValidationRecordDaoIT {
     public void getByBatchIAndRunNumberWithLimit() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         
-        List<Long> ids = new ArrayList<>();
+        List<UUID> ids = new ArrayList<>();
         for(int i=0; i<3 ; i++) {
             ids.add(dao.add(new ClaimValidationRecord(null, batchId, 1L, Status.INCOMPLETE, "claimNumber",
                 "record", null, null)));
@@ -171,9 +172,9 @@ public class ClaimValidationRecordDaoIT {
     public void countByBatchIdRunNumberStatus() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         
-        List<Long> ids = new ArrayList<>();
+        List<UUID> ids = new ArrayList<>();
         for(int i=0; i<3 ; i++) {
             ids.add(dao.add(new ClaimValidationRecord(null, batchId, 1L, Status.INCOMPLETE, "claimNumber",
                 "record", null, null)));
@@ -188,9 +189,9 @@ public class ClaimValidationRecordDaoIT {
     public void countByBatchIdRunNumberStatusWithVaryingStatuses() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         
-        List<Long> ids = new ArrayList<>();
+        List<UUID> ids = new ArrayList<>();
         ids.add(dao.add(new ClaimValidationRecord(null, batchId, 1L, Status.INCOMPLETE, "claimNumber",
                 "record", null, null)));
         ids.add(dao.add(new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
@@ -210,11 +211,11 @@ public class ClaimValidationRecordDaoIT {
     public void updateStatus() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         
-        Long id = dao.add(record);
+        UUID id = dao.add(record);
         ClaimValidationRecord result = dao.get(id);
         assertThat(result, is(notNullValue()));
         assertEquals(record.getStatus(), result.getStatus());
@@ -229,27 +230,27 @@ public class ClaimValidationRecordDaoIT {
     public void updateStatusWhereIdDoesNotExist() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         
-        Long id = dao.add(record);
+        UUID id = dao.add(record);
         ClaimValidationRecord result = dao.get(id);
         assertThat(result, is(notNullValue()));
         assertEquals(record.getStatus(), result.getStatus());
         
-        dao.updateStatus(System.currentTimeMillis(), Status.PENDING);
+        dao.updateStatus(UUID.randomUUID(), Status.PENDING);
     }
     
     @Test
     public void updateStatusAndRunNumber() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         
-        Long id = dao.add(record);
+        UUID id = dao.add(record);
         ClaimValidationRecord result = dao.get(id);
         assertThat(result, is(notNullValue()));
         assertEquals(record.getStatus(), result.getStatus());
@@ -266,11 +267,11 @@ public class ClaimValidationRecordDaoIT {
     public void updateStatusAndRunNumberWhereStatusDoesNotExist() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         
-        Long id = dao.add(record);
+        UUID id = dao.add(record);
         ClaimValidationRecord result = dao.get(id);
         assertThat(result, is(notNullValue()));
         assertEquals(record.getStatus(), result.getStatus());
@@ -284,11 +285,11 @@ public class ClaimValidationRecordDaoIT {
     public void updateStatusAndRunNumberWhereRunNumberDoesNotExist() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 com.doradosystems.mis.domain.ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, Status.COMPLETE, "claimNumber",
                 "record", null, null);
         
-        Long id = dao.add(record);
+        UUID id = dao.add(record);
         ClaimValidationRecord result = dao.get(id);
         assertThat(result, is(notNullValue()));
         assertEquals(record.getStatus(), result.getStatus());

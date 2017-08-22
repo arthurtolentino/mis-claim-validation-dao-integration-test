@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.sql.DataSource;
 
@@ -60,15 +61,15 @@ public class ClaimValidationResponseDaoIT {
     @Test
     public void add() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename", ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, ClaimValidationRecord.Status.COMPLETE, "claimNumber",
                 "record", null, null);
-        Long recordId = recordDao.add(record);
+        UUID recordId = recordDao.add(record);
         
         ClaimValidationResponse response = new ClaimValidationResponse(null, batchId, 1L,
                 ClaimValidationResponse.Status.COMPLETE, "foo", "bar", null, null, recordId);
-        long id = dao.add(response);
+        UUID id = dao.add(response);
         int count = jdbcTemplate.queryForObject(
                 "select count(*) from mis_claim_validation.claim_validation_response where id = ?", new Object[] { id },
                 Integer.class);
@@ -78,13 +79,13 @@ public class ClaimValidationResponseDaoIT {
     @Test(expected = DataPersistenceException.class)
     public void addBatchIdDoesNotExist() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename", ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, ClaimValidationRecord.Status.COMPLETE, "claimNumber",
                 "record", null, null);
-        Long recordId = recordDao.add(record);
+        UUID recordId = recordDao.add(record);
         
-        ClaimValidationResponse response = new ClaimValidationResponse(null, 1L, 1L,
+        ClaimValidationResponse response = new ClaimValidationResponse(null, UUID.randomUUID(), 1L,
                 ClaimValidationResponse.Status.COMPLETE, "foo", "bar", null, null, recordId);
         dao.add(response);
     }
@@ -92,33 +93,33 @@ public class ClaimValidationResponseDaoIT {
     @Test(expected = DataPersistenceException.class)
     public void addRecordIdDoesNotExist() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename", ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, ClaimValidationRecord.Status.COMPLETE, "claimNumber",
                 "record", null, null);
         recordDao.add(record);
         
         ClaimValidationResponse response = new ClaimValidationResponse(null, batchId, 1L,
-                ClaimValidationResponse.Status.COMPLETE, "foo", "bar", null, null, 1L);
+                ClaimValidationResponse.Status.COMPLETE, "foo", "bar", null, null, UUID.randomUUID());
         dao.add(response);
     }
     
     @Test
     public void getByBatchIdAndRunNumber() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename", ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, ClaimValidationRecord.Status.COMPLETE, "claimNumber",
                 "record", null, null);
-        Long recordId = recordDao.add(record);
+        UUID recordId = recordDao.add(record);
         
         Long runNumber = 1L;
         ClaimValidationResponse response1 = new ClaimValidationResponse(null, batchId, runNumber,
                 ClaimValidationResponse.Status.COMPLETE, "foo", "bar", null, null, recordId);
         ClaimValidationResponse response2 = new ClaimValidationResponse(null, batchId, runNumber,
                 ClaimValidationResponse.Status.PENDING, "foo", "bar", null, null, recordId);
-        long id1 = dao.add(response1);
-        long id2 = dao.add(response2);
+        UUID id1 = dao.add(response1);
+        UUID id2 = dao.add(response2);
         int count = jdbcTemplate.queryForObject(
                 "select count(*) from mis_claim_validation.claim_validation_response where id in (?, ?)", new Object[] { id1, id2 },
                 Integer.class);
@@ -133,15 +134,15 @@ public class ClaimValidationResponseDaoIT {
     @Test
     public void getPendingResponseIdentifiers() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename", ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, ClaimValidationRecord.Status.COMPLETE, "claimNumber",
                 "record", null, null);
-        Long recordId = recordDao.add(record);
+        UUID recordId = recordDao.add(record);
         
         ClaimValidationResponse response = new ClaimValidationResponse(null, batchId, 1L,
                 ClaimValidationResponse.Status.PENDING, "foo", "bar", null, null, recordId);
-        long id = dao.add(response);
+        UUID id = dao.add(response);
         int count = jdbcTemplate.queryForObject(
                 "select count(*) from mis_claim_validation.claim_validation_response where id = ?", new Object[] { id },
                 Integer.class);
@@ -154,15 +155,15 @@ public class ClaimValidationResponseDaoIT {
     @Test
     public void getPendingResponseIdentifiersWithNoAvailableRecords() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename", ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, ClaimValidationRecord.Status.COMPLETE, "claimNumber",
                 "record", null, null);
-        Long recordId = recordDao.add(record);
+        UUID recordId = recordDao.add(record);
         
         ClaimValidationResponse response = new ClaimValidationResponse(null, batchId, 1L,
                 ClaimValidationResponse.Status.COMPLETE, "foo", "bar", null, null, recordId);
-        long id = dao.add(response);
+        UUID id = dao.add(response);
         int count = jdbcTemplate.queryForObject(
                 "select count(*) from mis_claim_validation.claim_validation_response where id = ?", new Object[] { id },
                 Integer.class);
@@ -175,15 +176,15 @@ public class ClaimValidationResponseDaoIT {
     @Test
     public void updateStatus() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename", ClaimValidationBatch.Status.COMPLETE, 1L, "gcn", null, null);
-        Long batchId = batchDao.add(batch);
+        UUID batchId = batchDao.add(batch);
         
         ClaimValidationRecord record = new ClaimValidationRecord(null, batchId, 1L, ClaimValidationRecord.Status.COMPLETE, "claimNumber",
                 "record", null, null);
-        Long recordId = recordDao.add(record);
+        UUID recordId = recordDao.add(record);
         
         ClaimValidationResponse response = new ClaimValidationResponse(null, batchId, 1L,
                 ClaimValidationResponse.Status.PENDING, "foo", "bar", null, null, recordId);
-        long id = dao.add(response);
+        UUID id = dao.add(response);
         int count = jdbcTemplate.queryForObject(
                 "select count(*) from mis_claim_validation.claim_validation_response where id = ? and status = ?::mis_claim_validation.status",
                 new Object[] { id, ClaimValidationResponse.Status.PENDING.toString() }, Integer.class);
@@ -197,8 +198,8 @@ public class ClaimValidationResponseDaoIT {
         assertEquals(1, count);
     }
     
-    private void assertClaimValidationResponseEquals(ClaimValidationResponse expected, ClaimValidationResponse actual, long id) {
-        assertEquals(id, actual.getId().longValue());
+    private void assertClaimValidationResponseEquals(ClaimValidationResponse expected, ClaimValidationResponse actual, UUID id) {
+        assertEquals(id, actual.getId());
         assertEquals(expected.getBatchId(), actual.getBatchId());
         assertEquals(expected.getClaimNumber(), actual.getClaimNumber());
         assertEquals(expected.getClaimValidationRecordId(), actual.getClaimValidationRecordId());

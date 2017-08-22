@@ -18,6 +18,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.sql.DataSource;
 
@@ -51,7 +52,7 @@ public class ClaimValidationBatchDaoIT {
     public void add() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 Status.COMPLETE, 1L, "gcn", null, null);
-        Long id = dao.add(batch);
+        UUID id = dao.add(batch);
         
         ClaimValidationBatch result = dao.get(id);
         assertThat(result, is(notNullValue()));
@@ -61,7 +62,7 @@ public class ClaimValidationBatchDaoIT {
     public void getById() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 Status.ERROR, 2L, "gcn", null, null);
-        Long id = dao.add(batch);
+        UUID id = dao.add(batch);
         
         ClaimValidationBatch result = dao.get(id);
         assertThat(result, is(notNullValue()));
@@ -77,12 +78,12 @@ public class ClaimValidationBatchDaoIT {
     
     @Test(expected = NotFoundException.class)
     public void getByIdThatDoesNotExist() throws Exception {
-        dao.get(System.currentTimeMillis());
+        dao.get(UUID.randomUUID());
     }
     
     @Test
     public void getByStatus() throws Exception{
-        List<Long> ids = new ArrayList<>();
+        List<UUID> ids = new ArrayList<>();
         for(int i=0 ; i< 3 ; i++) {
             ids.add(dao.add(new ClaimValidationBatch(null, 1L, "filename",
                     Status.PROCESSING, 2L, "gcn", null, null)));
@@ -97,7 +98,7 @@ public class ClaimValidationBatchDaoIT {
     
     @Test
     public void getByStatusThatDoesNotExist() throws Exception {
-        List<Long> ids = new ArrayList<>();
+        List<UUID> ids = new ArrayList<>();
         for(int i=0 ; i< 3 ; i++) {
             ids.add(dao.add(new ClaimValidationBatch(null, 1L, "filename",
                     Status.PROCESSING, 2L, "gcn", null, null)));
@@ -110,7 +111,7 @@ public class ClaimValidationBatchDaoIT {
     
     @Test
     public void getByStatusWithLimit() throws Exception{
-        List<Long> ids = new ArrayList<>();
+        List<UUID> ids = new ArrayList<>();
         for(int i=0 ; i< 3 ; i++) {
             ids.add(dao.add(new ClaimValidationBatch(null, 1L, "filename",
                     Status.PROCESSING, 2L, "gcn", null, null)));
@@ -126,7 +127,7 @@ public class ClaimValidationBatchDaoIT {
     
     @Test
     public void count() throws Exception {
-        List<Long> ids = new ArrayList<>();
+        List<UUID> ids = new ArrayList<>();
         for(int i=0 ; i< 3 ; i++) {
             ids.add(dao.add(new ClaimValidationBatch(null, 1L, "filename",
                     Status.LOADING, 2L, "gcn", null, null)));
@@ -139,7 +140,7 @@ public class ClaimValidationBatchDaoIT {
     public void updateStatus() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 Status.COMPLETE, 1L, "gcn", null, null);
-        Long id = dao.add(batch);
+        UUID id = dao.add(batch);
         
         ClaimValidationBatch result = dao.get(id);
         assertThat(result, is(notNullValue()));
@@ -155,20 +156,20 @@ public class ClaimValidationBatchDaoIT {
     public void updateStatusWhereIdDoesNotExist() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 Status.COMPLETE, 1L, "gcn", null, null);
-        Long id = dao.add(batch);
+        UUID id = dao.add(batch);
         
         ClaimValidationBatch result = dao.get(id);
         assertThat(result, is(notNullValue()));
         assertEquals(Status.COMPLETE, result.getStatus());
         
-        dao.updateStatus(System.currentTimeMillis(), Status.ERROR);
+        dao.updateStatus(UUID.randomUUID(), Status.ERROR);
     }
     
     @Test
     public void updateStatusAndRunNumber() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 Status.COMPLETE, 1L, "gcn", null, null);
-        Long id = dao.add(batch);
+        UUID id = dao.add(batch);
         
         ClaimValidationBatch result = dao.get(id);
         assertThat(result, is(notNullValue()));
@@ -185,12 +186,12 @@ public class ClaimValidationBatchDaoIT {
     public void updateStatusAndRunNumberWhereIdDoesNotExist() throws Exception {
         ClaimValidationBatch batch = new ClaimValidationBatch(null, 1L, "filename",
                 Status.COMPLETE, 1L, "gcn", null, null);
-        Long id = dao.add(batch);
+        UUID id = dao.add(batch);
         
         ClaimValidationBatch result = dao.get(id);
         assertThat(result, is(notNullValue()));
         assertEquals(Status.COMPLETE, result.getStatus());
-        dao.updateStatusAndRunNumber(System.currentTimeMillis(), Status.ERROR, 10L);
+        dao.updateStatusAndRunNumber(UUID.randomUUID(), Status.ERROR, 10L);
     }
 
 }
