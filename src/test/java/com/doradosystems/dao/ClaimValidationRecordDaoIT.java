@@ -86,8 +86,8 @@ public class ClaimValidationRecordDaoIT {
         UUID id = dao.add(record);
         ClaimValidationRecord result = dao.get(id);
         assertThat(result, is(notNullValue()));
-        assertEquals(batchId, result.getBatchId());
-        assertEquals(id, result.getId());
+        assertEquals(batchId, result.getClaimValidationBatchId());
+        assertEquals(id, result.getClaimValidationRecordId());
         assertEquals(record.getClaimNumber(), result.getClaimNumber());
         assertEquals(record.getRecord(), result.getRecord());
         assertEquals(record.getRunNumber(), result.getRunNumber());
@@ -114,8 +114,8 @@ public class ClaimValidationRecordDaoIT {
         assertEquals(1, results.size());
         ClaimValidationRecord result = results.get(0);
         assertThat(result, is(notNullValue()));
-        assertEquals(batchId, result.getBatchId());
-        assertEquals(id, result.getId());
+        assertEquals(batchId, result.getClaimValidationBatchId());
+        assertEquals(id, result.getClaimValidationRecordId());
         assertEquals(record.getClaimNumber(), result.getClaimNumber());
         assertEquals(record.getRecord(), result.getRecord());
         assertEquals(record.getRunNumber(), result.getRunNumber());
@@ -165,7 +165,7 @@ public class ClaimValidationRecordDaoIT {
         
         List<ClaimValidationRecord> results = dao.getByBatchIdAndRunNumberOrderByUpdateDateDescending(batchId, 1L, 1);
         assertEquals(1, results.size());
-        assertEquals(ids.get(2), results.get(0).getId());
+        assertEquals(ids.get(2), results.get(0).getClaimValidationRecordId());
     }
     
     @Test

@@ -66,7 +66,7 @@ public class ClaimValidationBatchDaoIT {
         
         ClaimValidationBatch result = dao.get(id);
         assertThat(result, is(notNullValue()));
-        assertEquals(id, result.getId());
+        assertEquals(id, result.getClaimValidationBatchId());
         assertEquals(batch.getClientId(), result.getClientId());
         assertEquals(batch.getFilename(), result.getFilename());
         assertEquals(batch.getGlobalControlNumber(), result.getGlobalControlNumber());
@@ -121,7 +121,7 @@ public class ClaimValidationBatchDaoIT {
         assertEquals(1, result.size());
         result.forEach(claimValidationBatch -> {
             assertEquals(Status.PROCESSING, claimValidationBatch.getStatus());
-            assertEquals(ids.get(0), claimValidationBatch.getId());
+            assertEquals(ids.get(0), claimValidationBatch.getClaimValidationBatchId());
         });
     }
     

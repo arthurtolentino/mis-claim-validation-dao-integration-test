@@ -199,8 +199,8 @@ public class ClaimValidationResponseDaoIT {
     }
     
     private void assertClaimValidationResponseEquals(ClaimValidationResponse expected, ClaimValidationResponse actual, UUID id) {
-        assertEquals(id, actual.getId());
-        assertEquals(expected.getBatchId(), actual.getBatchId());
+        assertEquals(id, actual.getClaimValidationResponseId());
+        assertEquals(expected.getClaimValidationBatchId(), actual.getClaimValidationBatchId());
         assertEquals(expected.getClaimNumber(), actual.getClaimNumber());
         assertEquals(expected.getClaimValidationRecordId(), actual.getClaimValidationRecordId());
         assertEquals(expected.getResponse(), actual.getResponse());
