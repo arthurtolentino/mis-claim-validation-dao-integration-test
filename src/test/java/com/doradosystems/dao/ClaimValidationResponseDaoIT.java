@@ -71,7 +71,7 @@ public class ClaimValidationResponseDaoIT {
                 ClaimValidationResponse.Status.COMPLETE, "foo", "bar", null, null, recordId);
         UUID id = dao.add(response);
         int count = jdbcTemplate.queryForObject(
-                "select count(*) from mis_claim_validation.claim_validation_response where id = ?", new Object[] { id },
+                "select count(*) from mis_claim_validation.claim_validation_response where claim_validation_response_id = ?", new Object[] { id },
                 Integer.class);
         assertEquals(1, count);
     }
@@ -121,7 +121,7 @@ public class ClaimValidationResponseDaoIT {
         UUID id1 = dao.add(response1);
         UUID id2 = dao.add(response2);
         int count = jdbcTemplate.queryForObject(
-                "select count(*) from mis_claim_validation.claim_validation_response where id in (?, ?)", new Object[] { id1, id2 },
+                "select count(*) from mis_claim_validation.claim_validation_response where claim_validation_response_id in (?, ?)", new Object[] { id1, id2 },
                 Integer.class);
         assertEquals(2, count);
         
@@ -144,7 +144,7 @@ public class ClaimValidationResponseDaoIT {
                 ClaimValidationResponse.Status.PENDING, "foo", "bar", null, null, recordId);
         UUID id = dao.add(response);
         int count = jdbcTemplate.queryForObject(
-                "select count(*) from mis_claim_validation.claim_validation_response where id = ?", new Object[] { id },
+                "select count(*) from mis_claim_validation.claim_validation_response where claim_validation_response_id = ?", new Object[] { id },
                 Integer.class);
         assertEquals(1, count);
         
@@ -165,7 +165,7 @@ public class ClaimValidationResponseDaoIT {
                 ClaimValidationResponse.Status.COMPLETE, "foo", "bar", null, null, recordId);
         UUID id = dao.add(response);
         int count = jdbcTemplate.queryForObject(
-                "select count(*) from mis_claim_validation.claim_validation_response where id = ?", new Object[] { id },
+                "select count(*) from mis_claim_validation.claim_validation_response where claim_validation_response_id = ?", new Object[] { id },
                 Integer.class);
         assertEquals(1, count);
         
@@ -186,14 +186,14 @@ public class ClaimValidationResponseDaoIT {
                 ClaimValidationResponse.Status.PENDING, "foo", "bar", null, null, recordId);
         UUID id = dao.add(response);
         int count = jdbcTemplate.queryForObject(
-                "select count(*) from mis_claim_validation.claim_validation_response where id = ? and status = ?::mis_claim_validation.status",
+                "select count(*) from mis_claim_validation.claim_validation_response where claim_validation_response_id = ? and status = ?::mis_claim_validation.status",
                 new Object[] { id, ClaimValidationResponse.Status.PENDING.toString() }, Integer.class);
         assertEquals(1, count);
         
         int updated = dao.updateStatus(batchId, response.getRunNumber(), ClaimValidationResponse.Status.COMPLETE);
         assertEquals(1, updated);
         count = jdbcTemplate.queryForObject(
-                "select count(*) from mis_claim_validation.claim_validation_response where id = ? and status = ?::mis_claim_validation.status",
+                "select count(*) from mis_claim_validation.claim_validation_response where claim_validation_response_id = ? and status = ?::mis_claim_validation.status",
                 new Object[] { id, ClaimValidationResponse.Status.COMPLETE.toString() }, Integer.class);
         assertEquals(1, count);
     }
