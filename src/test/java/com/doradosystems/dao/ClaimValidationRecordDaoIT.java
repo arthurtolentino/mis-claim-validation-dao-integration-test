@@ -51,8 +51,8 @@ public class ClaimValidationRecordDaoIT {
         if (jdbcTemplate == null) {
             jdbcTemplate = new JdbcTemplate(dataSource);
         }
-        jdbcTemplate.update("DELETE FROM mis_claim_validation.claim_validation_record");
-        jdbcTemplate.update("DELETE FROM mis_claim_validation.claim_validation_batch");
+        jdbcTemplate.update("DELETE FROM mis_claim_validation_service.claim_validation_record");
+        jdbcTemplate.update("DELETE FROM mis_claim_validation_service.claim_validation_batch");
     }
     
     @Test
